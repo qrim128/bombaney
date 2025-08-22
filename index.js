@@ -45,7 +45,7 @@ const getDifficulty = () => {
         case 'insane':
             return ["0123456789", 3000, 1000, 'insane'];
         case 'god':
-            return ["0123456789", 2800, 1250, 'god'];
+            return ["0123456789", 3000, 1250, 'god'];
     }
 }
 
