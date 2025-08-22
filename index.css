@@ -1,0 +1,167 @@
+body {
+    background-color: #15181d;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.title{
+    text-align:center;
+    color:white;
+}
+.description{
+    text-align:center;
+    color:gray;
+}
+.streaks {
+    display: block;
+    margin: 40px auto;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+    width: -moz-fit-content;
+    width: fit-content;
+    background-color: #028000;
+    padding: 12px;
+    border-radius: 18px;
+}
+.best_time,
+.time {
+    display: inline-block;
+    width: 100px;
+}
+.streaks .fa {
+    padding: 0 10px;
+}
+.options{
+    font-weight: bold;
+    text-align: center;
+    margin: 0 auto 10px;
+    cursor: default;
+    user-select: none;
+}
+.option{
+    display: inline-block;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    width: -moz-fit-content;
+    width: fit-content;
+    height: 20px;
+    background-color: #20282e;
+    padding: 10px 20px;
+    margin: 0 auto 10px;
+    border-radius: 6px;
+}
+.option.setting{
+    display: inline-flex;
+    height: 32px;
+    padding: 0;
+}
+.option.setting label{
+    font-size: 12px;
+    padding: 6px 10px 6px 6px;
+    cursor: pointer;
+}
+.option.setting input{
+    vertical-align: -2px;
+    cursor: pointer;
+}
+.option.timeout label{
+    padding: 9px;
+}
+.option.timeout input{
+    vertical-align: text-top;
+}
+.timeout_value{
+    font-size: 12px;
+    display: inline-block;
+    width: 18px;
+    text-align: right;
+    padding: 9px 12px 9px 5px;
+}
+
+/* GAME CONTAINER */
+.minigame {
+  margin: 0 auto 20px;
+  width: 640px;
+  height: 640px;
+  background-color: #0e111a;
+  position: relative; /* IMPORTANT! children positioned inside here */
+  overflow: hidden;   /* equations can't escape */
+}
+
+/* Splash screens */
+.splash, .splash1, .splash2 {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 16px;
+    margin-top: 240px;
+}
+
+.splash .hacker, 
+.splash .hacker1 {
+    font-size: 65px;
+    margin-bottom: 30px;
+}
+
+/* Bar with red line */
+.minigame > .hack > .bar {
+    width: 100%;
+    height: 44px;
+    margin-top: 34px;
+    display: inline-block;
+    position: absolute;
+    background-color: #491419 !important;
+    border: none;
+    box-shadow: none;
+}
+.minigame > .hack > .bar::after {
+    content: "";
+    position: absolute;
+    top: 50%;            
+    left: 0;
+    width: 100%;
+    height: 2px;         
+    background-color: #e50808; 
+}
+/* Centered equation */
+.minigame .equations {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;   /* match game box */
+  height: 100%;
+}
+
+.minigame .equation {
+  position: absolute;
+  top: 600px;                          /* where it spawns */
+  left: 45%;                       /* middle horizontally */
+  transform: translateX(-50%);     /* correct centering */
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: normal;
+  font-family: Arial, sans-serif;
+}
+
+.hidden { display: none; }
+
+/* RESTART BUTTON */
+.restart {
+    text-align: center;
+    margin-top: 20px;
+}
+.btn_again {
+    padding: 6px 15px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 6px;
+    border: none;
+    background: #028000;
+    color: white;
+}
