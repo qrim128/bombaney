@@ -132,47 +132,41 @@ const barDiv = document.querySelector('.minigame .bar');
 barDiv.style.backgroundColor = '#491419';
 
 document.addEventListener("keydown", function(ev) {
-    let key_pressed = ev.key;
-    if (game_started && valid_keys.includes(key_pressed)) {
-        let element = equations[0].el;
-        let top = -590 * parseFloat(element.dataset.progress);
+    if (!game_started || equations.length === 0) return;
 
-        // ✅ Check if equation is inside the "hit zone"
-        if (key_pressed === element.dataset.answer.toString() && top < -475 && top > -580) {
+    let element = equations[0].el;
+    let key_pressed = ev.key;
+    let top = -590 * parseFloat(element.dataset.progress);
+
+    // ✅ Only accept the correct key AND only inside the hit zone
+    if (key_pressed === element.dataset.answer.toString()) {
+        if (top < -475 && top > -580) {
             // Correct timing + correct key
             streak++;
             element.style.color = "lime";
-        } 
-        // ❌ Pressed AFTER equation has passed the line OR wrong key
-        else {
-            element.style.color = "red";
-            mistakes++;
 
-            if (mistakes >= maxMistakes) {
-                stopTimer();
-                document.querySelector('.minigame .splash1').classList.remove('hidden'); // FAILED
-                document.querySelector('.minigame .hack').classList.add('hidden');
-                game_started = false;
-            }
+            document.querySelector('.streak').innerHTML = streak;
+
+            equations[0].stop();
+
+            new mojs.Html({
+                el: element,
+                y: top,
+                opacity: { 1: 0, duration: 500 },
+                duration: 500,
+                onComplete() {
+                    element.remove();
+                },
+            }).play();
+
+            equations.splice(0, 1);
         }
-
-        document.querySelector('.streak').innerHTML = streak;
-
-        equations[0].stop();
-
-        new mojs.Html({
-            el: element,
-            y: top,
-            opacity: { 1: 0, duration: 500 },
-            duration: 500,
-            onComplete() {
-                element.remove();
-            },
-        }).play();
-
-        equations.splice(0, 1);
+        // ⛔ If they pressed the right key but too early/too late → just ignore (no penalty)
     }
+
+    // ⛔ Wrong keys do absolutely nothing
 });
+
 
 let createEquation = () => {
   const equationsElem = document.querySelector('.minigame .equations');
