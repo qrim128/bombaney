@@ -137,15 +137,17 @@ document.addEventListener("keydown", function(ev) {
         let element = equations[0].el;
         let top = -590 * parseFloat(element.dataset.progress);
 
-        // ✅ Correct key pressed inside green bar
-        if (top < -475 && top > -580 && key_pressed === element.dataset.answer.toString()) {
+        // ✅ Check if equation is inside the "hit zone"
+        if (key_pressed === element.dataset.answer.toString() && top < -475 && top > -580) {
+            // Correct timing + correct key
             streak++;
-            element.style.color = "lime"; // turn green
+            element.style.color = "lime";
         } 
-        // ❌ Wrong key
+        // ❌ Pressed AFTER equation has passed the line OR wrong key
         else {
-            element.style.color = "red"; // turn red
-            mistakes++; // count mistake
+            element.style.color = "red";
+            mistakes++;
+
             if (mistakes >= maxMistakes) {
                 stopTimer();
                 document.querySelector('.minigame .splash1').classList.remove('hidden'); // FAILED
