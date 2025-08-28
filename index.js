@@ -140,7 +140,7 @@ document.addEventListener("keydown", function(ev) {
 
     // ✅ Only accept the correct key AND only inside the hit zone
     if (key_pressed === element.dataset.answer.toString()) {
-        if (top < -475 && top > -580) {
+        if (top < -530 && top > -560) {
             // Correct timing + correct key
             streak++;
             element.style.color = "lime";
