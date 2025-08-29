@@ -145,7 +145,7 @@ document.addEventListener("keydown", function (ev) {
             element.style.backgroundColor = "#0e870d";
             element.style.color = "#FFFFFF";   // optional
             element.style.textAlign = "center";
-            element.style.padding = "3px 0";
+            element.style.padding = "2px 0";
 
             document.querySelector('.streak').innerHTML = streak;
         }
