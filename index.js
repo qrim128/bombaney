@@ -13,7 +13,6 @@ const random = (min, max) => {
 }
 
 let readCookie = () => {
-    // Get max streak from cookie
     let regex = new RegExp("max-streak_powerplant_" + difficulty[3] + "=([\\d]+)", 'g');
     let cookie = document.cookie;
     if ((cookie = regex.exec(cookie)) !== null) {
@@ -21,7 +20,6 @@ let readCookie = () => {
     } else {
         max_streak = 0;
     }
-    // Get best time from cookie
     let regex_time = new RegExp("best-time_powerplant_" + difficulty[3] + "=([\\d.]+)", 'g');
     cookie = document.cookie;
     if ((cookie = regex_time.exec(cookie)) !== null) {
@@ -119,7 +117,7 @@ function generateEquation(difficulty_level) {
 
 // Get the <div> element
 const barDiv = document.querySelector('.minigame .bar');
-// Set the bar to red color to match the design
+// Set the bar to red color
 barDiv.style.backgroundColor = '#491419';
 
 document.addEventListener("keydown", function (ev) {
@@ -129,17 +127,14 @@ document.addEventListener("keydown", function (ev) {
     let key_pressed = ev.key;
     let top = -590 * parseFloat(element.dataset.progress);
 
+    // ✅ Hit window unchanged
     if (key_pressed === element.dataset.answer.toString()) {
-        if (top < -535 && top > -555) {
-            // Correct timing + correct key
+        if (top < -475 && top > -500) {
             streak++;
             element.style.color = "lime"; // mark correct
             document.querySelector('.streak').innerHTML = streak;
-
-            // ✅ no stop() → equation keeps flowing
         }
     }
-    // Wrong keys do nothing
 });
 
 let createEquation = () => {
@@ -160,7 +155,9 @@ let createEquation = () => {
     equations.push(new mojs.Html({
         el: div,
         y: {
-            0: -590, duration, easing: 'linear.none',
+            0: -650, // ⬅️ exceeds the box
+            duration,
+            easing: 'linear.none',
             onProgress(p) { div.dataset.progress = p; }
         },
         opacity: { 0: 1, duration: 200, easing: 'linear.none' },
@@ -177,6 +174,7 @@ let createEquation = () => {
                 }
             }
             equations.splice(0, 1);
+            div.remove(); // cleanup
         },
         onUpdate() { if (!game_started) this.pause(); }
     }));
@@ -210,7 +208,7 @@ function reset(restart = true) {
         document.querySelector('.minigame .hack').classList.add('hidden');
         document.querySelector('.minigame .splash').classList.remove('hidden');
         document.querySelector('.minigame .equations').innerHTML = '';
-        barDiv.style.backgroundColor = '#dc3545'; // red bar
+        barDiv.style.backgroundColor = '#dc3545';
         start();
     }
 }
