@@ -132,10 +132,21 @@ document.addEventListener("keydown", function (ev) {
     if (key_pressed === element.dataset.answer.toString()) {
         if (top < -475 && top > -505) {
             streak++;
-            element.dataset.correct = "1";             // mark solved
-            element.style.backgroundColor = "lime";   // ✅ highlight green
-            element.style.borderRadius = "8px";
-            element.style.padding = "2px 6px";
+            element.dataset.correct = "1";
+
+            // ✅ Match highlight width & position to the red bar
+            const bar = document.querySelector('.minigame .bar');
+            const barRect = bar.getBoundingClientRect();
+            const parentRect = bar.parentElement.getBoundingClientRect();
+
+            element.style.position = "absolute";
+            element.style.left = (barRect.left - parentRect.left) + "px";
+            element.style.width = barRect.width + "px";
+            element.style.backgroundColor = "lime";
+            element.style.color = "#000";   // optional
+            element.style.textAlign = "center";
+            element.style.padding = "5px 0";
+
             document.querySelector('.streak').innerHTML = streak;
         }
     }
