@@ -141,10 +141,10 @@ body {
 .minigame .equation {
   position: absolute;
   top: 600px;                          /* where it spawns */
-  left: 45%;                       /* middle horizontally */
+  left: 47%;                       /* middle horizontally */
   transform: translateX(-50%);     /* correct centering */
   color: #ffffff;
-  font-size: 30px;
+  font-size: 26px;
   font-weight: normal;
   font-family: Arial, sans-serif;
 }
