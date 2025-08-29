@@ -6,7 +6,8 @@ let best_time = 0;
 let mistakes = 0;
 const maxMistakes = 3;
 
-const sleep = (ms, fn) => { return setTimeout(fn, ms) };
+
+const sleep = (ms, fn) => {return setTimeout(fn, ms)};
 
 const random = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -14,19 +15,19 @@ const random = (min, max) => {
 
 let readCookie = () => {
     // Get max streak from cookie
-    let regex = new RegExp("max-streak_powerplant_" + difficulty[3] + "=([\\d]+)", 'g');
+    let regex = new RegExp("max-streak_powerplant_"+difficulty[3]+"=([\\d]+)",'g');
     let cookie = document.cookie;
-    if ((cookie = regex.exec(cookie)) !== null) {
+    if((cookie = regex.exec(cookie)) !== null){
         max_streak = cookie[1];
-    } else {
+    }else{
         max_streak = 0;
     }
-    // Get best time from cookie
-    let regex_time = new RegExp("best-time_powerplant_" + difficulty[3] + "=([\\d.]+)", 'g');
+    // Get max streak from cookie
+    let regex_time = new RegExp("best-time_powerplant_"+difficulty[3]+"=([\\d.]+)",'g');
     cookie = document.cookie;
-    if ((cookie = regex_time.exec(cookie)) !== null) {
+    if((cookie = regex_time.exec(cookie)) !== null){
         best_time = parseFloat(cookie[1]);
-    } else {
+    }else{
         best_time = 0;
     }
 }
@@ -34,7 +35,7 @@ let readCookie = () => {
 const getDifficulty = () => {
     let difficulty_selected = document.querySelector('input[name="difficulty"]:checked').value;
 
-    switch (difficulty_selected) {
+    switch(difficulty_selected){
         case 'easy':
             return ["0123456789", 3000, 1000, 'easy'];
         case 'medium':
@@ -50,14 +51,13 @@ const getDifficulty = () => {
 
 // Difficulty changed
 document.querySelectorAll('input[name="difficulty"]').forEach((el) => {
-    el.addEventListener('change', function () {
+    el.addEventListener('change', function(){
         streak = 0;
         reset();
     });
 });
-
 // Resets
-document.querySelector('.btn_again').addEventListener('click', function () {
+document.querySelector('.btn_again').addEventListener('click', function(){
     streak = 0;
     reset();
 });
@@ -65,9 +65,10 @@ document.querySelector('.btn_again').addEventListener('click', function () {
 // Generate math equation based on difficulty
 function generateEquation(difficulty_level) {
     let num1, num2, operator, answer, equation;
-
-    switch (difficulty_level) {
+    
+    switch(difficulty_level) {
         case 'easy':
+            // Simple addition (0-5 + 0-4 to ensure answer is 0-9)
             num1 = random(0, 5);
             num2 = random(0, Math.min(4, 9 - num1));
             operator = '+';
@@ -75,13 +76,16 @@ function generateEquation(difficulty_level) {
             equation = `${num1}+${num2}`;
             break;
         case 'medium':
+            // Addition and subtraction
             if (random(0, 1) === 0) {
+                // Addition
                 num1 = random(0, 5);
                 num2 = random(0, Math.min(4, 9 - num1));
                 operator = '+';
                 answer = num1 + num2;
                 equation = `${num1}+${num2}`;
             } else {
+                // Subtraction
                 num1 = random(0, 9);
                 num2 = random(0, num1);
                 operator = '-';
@@ -92,20 +96,24 @@ function generateEquation(difficulty_level) {
         case 'hard':
         case 'insane':
         case 'god':
+            // Addition, subtraction, and multiplication
             let operation = random(0, 2);
             if (operation === 0) {
+                // Addition
                 num1 = random(0, 5);
                 num2 = random(0, Math.min(4, 9 - num1));
                 operator = '+';
                 answer = num1 + num2;
                 equation = `${num1}+${num2}`;
             } else if (operation === 1) {
+                // Subtraction
                 num1 = random(0, 9);
                 num2 = random(0, num1);
                 operator = '-';
                 answer = num1 - num2;
                 equation = `${num1}-${num2}`;
             } else {
+                // Multiplication (limited to ensure answer is 0-9)
                 num1 = random(1, 3);
                 num2 = random(1, Math.floor(9 / num1));
                 operator = '×';
@@ -114,61 +122,65 @@ function generateEquation(difficulty_level) {
             }
             break;
     }
-
+    
     return { equation, answer };
 }
 
-// Get the <div> element (bar)
+// Get the <div> element
 const barDiv = document.querySelector('.minigame .bar');
-// Set the bar to red color
+// Set the bar to red color to match the design
 barDiv.style.backgroundColor = '#491419';
 
-document.addEventListener("keydown", function (ev) {
+document.addEventListener("keydown", function(ev) {
     if (!game_started || equations.length === 0) return;
 
     let element = equations[0].el;
     let key_pressed = ev.key;
     let top = -590 * parseFloat(element.dataset.progress);
 
-    // ✅ Inside hit zone
-    if (top < -535 && top > -555) {
-        if (key_pressed === element.dataset.answer.toString()) {
-            // Correct key
+    // ✅ Only accept the correct key AND only inside the hit zone
+    if (key_pressed === element.dataset.answer.toString()) {
+        if (top < -535 && top > -555) {
+            // Correct timing + correct key
             streak++;
-            document.querySelector('.streak').innerHTML = streak;
-
-            // ✅ Flash bar green
             element.style.color = "lime";
 
-            // ✅ Mark as answered (so it won’t count as mistake)
-            element.dataset.answered = "true";
+            document.querySelector('.streak').innerHTML = streak;
 
-        } else if (/^[0-9]$/.test(key_pressed)) {
-            // Wrong number key in hit zone
-            mistakes++;
-            if (mistakes >= maxMistakes) {
-                stopTimer();
-                document.querySelector('.minigame .splash1').classList.remove('hidden');
-                document.querySelector('.minigame .hack')?.classList.add('hidden');
-                game_started = false;
-            }
+            equations[0].stop();
 
-            // ❌ Flash bar orange
-            element.style.color = "orange";
+            new mojs.Html({
+                el: element,
+                y: top,
+                opacity: { 1: 0, duration: 500 },
+                duration: 500,
+                onComplete() {
+                    element.remove();
+                },
+            }).play();
+
+            equations.splice(0, 1);
         }
+        // ⛔ If they pressed the right key but too early/too late → just ignore (no penalty)
     }
+
+    // ⛔ Wrong keys do absolutely nothing
 });
 
-let createEquation = () => {
-    const equationsElem = document.querySelector('.minigame .equations');
-    let div = document.createElement('div');
-    div.classList.add('equation');
 
-    // Generate equation
+let createEquation = () => {
+  const equationsElem = document.querySelector('.minigame .equations');
+  let div = document.createElement('div');
+  div.classList.add('equation'); // no pos classes needed now
+    
+    // Generate equation based on current difficulty
     let equationData = generateEquation(difficulty[3]);
     div.innerHTML = equationData.equation;
     div.dataset.answer = equationData.answer;
+    
+    // Set equation color to white for visibility
     div.style.color = '#ffffff';
+
 
     equationsElem.append(div);
     const duration = difficulty[1];
@@ -176,22 +188,18 @@ let createEquation = () => {
 
     equations.push(new mojs.Html({
         el: div,
-        y: {
-            0: -590, duration, easing: 'linear.none',
-            onProgress(p) { div.dataset.progress = p; }
-        },
+        y: { 0: -590, duration, easing: 'linear.none',
+             onProgress(p){ div.dataset.progress = p; } },
         opacity: { 0: 1, duration: 200, easing: 'linear.none' },
         duration,
         onComplete() {
-            // Only count as mistake if NOT answered
-            if (div.dataset.answered !== "true") {
-                mistakes++;
-                if (mistakes >= maxMistakes) {
-                    stopTimer();
-                    document.querySelector('.minigame .splash1').classList.remove('hidden'); // FAILED
-                    document.querySelector('.minigame .hack')?.classList.add('hidden');
-                    game_started = false;
-                }
+            // Unanswered → counts as a mistake
+            mistakes++;
+            if (mistakes >= maxMistakes) {
+                stopTimer();
+                document.querySelector('.minigame .splash1').classList.remove('hidden'); // FAILED
+                document.querySelector('.minigame .hack')?.classList.add('hidden');
+                game_started = false;
             }
             equations.splice(0, 1);
         },
@@ -199,18 +207,18 @@ let createEquation = () => {
     }));
 
     equations[equationsCnt]
-        .then({ opacity: 0, duration: 500, onComplete() { div.remove(); } })
+        .then({ opacity: 0, duration: 500, onComplete(){ div.remove(); } })
         .play();
 };
 
 function resetGame() {
-    mistakes = 0;
-    streak = 0;
+    mistakes = 0;     // reset mistakes
+    streak = 0;       // reset streak
     document.querySelector('.streak').innerHTML = streak;
-    reset(true);
+    reset(true);      // call your reset function and restart
 }
 
-function reset(restart = true) {
+function reset(restart = true){
     game_started = false;
 
     resetTimer();
@@ -219,24 +227,26 @@ function reset(restart = true) {
     clearTimeout(timer_finish);
     clearTimeout(timer_hide);
 
-    if (restart) {
-        mistakes = 0;
-        streak = 0;
+    if(restart){
+        mistakes = 0;  // ✅ reset mistakes
+        streak = 0;    // ✅ reset streak
         document.querySelector('.streak').innerHTML = streak;
 
         document.querySelector('.minigame .hack').classList.add('hidden');
         document.querySelector('.minigame .splash').classList.remove('hidden');
         document.querySelector('.minigame .equations').innerHTML = '';
-        barDiv.style.backgroundColor = '#dc3545';
+        barDiv.style.backgroundColor = '#dc3545'; // Keep red color
         start();
     }
 }
 
-function start() {
+
+function start(){
+
     document.querySelector('.minigame .splash1').classList.add('hidden');
     document.querySelector('.minigame .splash2').classList.add('hidden');
 
-    timer_start = sleep(3000, function () {
+    timer_start = sleep(3000, function(){
         document.querySelector('.minigame .splash').classList.add('hidden');
         document.querySelector('.minigame .hack').classList.remove('hidden');
 
@@ -250,27 +260,29 @@ function start() {
         game_started = true;
 
         timer_game = setInterval(createEquation, difficulty[2]);
+
         startTimer();
+
     });
 }
 
-function startTimer() {
+function startTimer(){
     timerStart = new Date();
-    timer_time = setInterval(timer, 1);
-}
-function timer() {
+    timer_time = setInterval(timer,1);
+}  
+function timer(){
     let timerNow = new Date();
     let timerDiff = new Date();
     timerDiff.setTime(timerNow - timerStart);
     let ms = timerDiff.getMilliseconds();
     let sec = timerDiff.getSeconds();
-    if (ms < 10) { ms = "00" + ms; } else if (ms < 100) { ms = "0" + ms; }
-    document.querySelector('.streaks .time').innerHTML = sec + "." + ms;
+    if (ms < 10) {ms = "00"+ms;}else if (ms < 100) {ms = "0"+ms;}
+    document.querySelector('.streaks .time').innerHTML = sec+"."+ms;
 }
-function stopTimer() {
+function stopTimer(){
     clearInterval(timer_time);
 }
-function resetTimer() {
+function resetTimer(){
     clearInterval(timer_time);
     document.querySelector('.streaks .time').innerHTML = '0.000';
 }
