@@ -129,7 +129,7 @@ document.addEventListener("keydown", function (ev) {
 
     // ✅ Hit window unchanged
     if (key_pressed === element.dataset.answer.toString()) {
-        if (top < -475 && top > -500) {
+        if (top < -475 && top > -505) {
             streak++;
             element.style.color = "lime"; // mark correct
             document.querySelector('.streak').innerHTML = streak;
