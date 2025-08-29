@@ -125,13 +125,17 @@ document.addEventListener("keydown", function (ev) {
 
     let element = equations[0].el;
     let key_pressed = ev.key;
+    if (!valid_keys.includes(key_pressed)) return;
+
     let top = -590 * parseFloat(element.dataset.progress);
 
-    // ✅ Hit window unchanged
     if (key_pressed === element.dataset.answer.toString()) {
         if (top < -475 && top > -505) {
             streak++;
-            element.style.color = "lime"; // mark correct
+            element.dataset.correct = "1";             // mark solved
+            element.style.backgroundColor = "lime";   // ✅ highlight green
+            element.style.borderRadius = "8px";
+            element.style.padding = "2px 6px";
             document.querySelector('.streak').innerHTML = streak;
         }
     }
@@ -145,6 +149,7 @@ let createEquation = () => {
     let equationData = generateEquation(difficulty[3]);
     div.innerHTML = equationData.equation;
     div.dataset.answer = equationData.answer;
+    div.dataset.correct = "0"; // track if answered correctly
 
     div.style.color = '#ffffff'; // white by default
 
@@ -163,8 +168,8 @@ let createEquation = () => {
         opacity: { 0: 1, duration: 200, easing: 'linear.none' },
         duration,
         onComplete() {
-            // Only count as mistake if not answered
-            if (div.style.color !== "lime") {
+            // Only count as mistake if not answered correctly
+            if (div.dataset.correct !== "1") {
                 mistakes++;
                 if (mistakes >= maxMistakes) {
                     stopTimer();
