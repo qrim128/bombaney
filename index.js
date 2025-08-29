@@ -142,7 +142,7 @@ document.addEventListener("keydown", function (ev) {
             element.style.position = "absolute";
             element.style.left = (barRect.left - parentRect.left) + "px";
             element.style.width = barRect.width + "px";
-            element.style.backgroundColor = "#0e870d";
+            element.style.backgroundColor = "rgba(0, 255, 0, 0.9)";
             element.style.color = "#FFFFFF";   // optional
             element.style.textAlign = "center";
             element.style.padding = "5px 0";
